@@ -1,8 +1,8 @@
-# VPS Telegram Bridge
+# VPS Bridge Bot
 
-**Repo:** [github.com/manupareekk/VPS_Telegram_Bridge](https://github.com/manupareekk/VPS_Telegram_Bridge)
+**Repo:** [github.com/manupareekk/VPS_Bridge_Bot](https://github.com/manupareekk/VPS_Bridge_Bot)
 
-Run [Cursor CLI](https://cursor.com/cli) on your VPS from **Telegram**: send a message as the agent prompt, get stdout/stderr streamed back in chat (line-by-line, split under Telegram’s size limit).
+Run [Cursor CLI](https://cursor.com/cli) on your VPS from **Telegram**: send a message as the agent prompt, get stdout/stderr streamed back in chat (line-by-line, split under Telegram's size limit).
 
 ## Prerequisites
 
@@ -13,8 +13,8 @@ Run [Cursor CLI](https://cursor.com/cli) on your VPS from **Telegram**: send a m
 ## Deploy on your VPS
 
 ```bash
-git clone https://github.com/manupareekk/VPS_Telegram_Bridge.git
-cd VPS_Telegram_Bridge
+git clone https://github.com/manupareekk/VPS_Bridge_Bot.git
+cd VPS_Bridge_Bot
 ```
 
 Install dependencies and build (prefer **`npm ci`** on the server for a clean lockfile match; **`npm install`** is fine for local hacking):
@@ -66,7 +66,7 @@ npm run dev
 | `ALLOWED_CHAT_IDS` | yes | Comma-separated Telegram user IDs allowed to control the bot |
 | `AGENT_WORKDIR` | yes | Working directory passed to `spawn` (`cwd`) |
 | `CURSOR_BIN` | no | Default `cursor` |
-| `CURSOR_ARGS_JSON` | no | JSON array of CLI args **before** the prompt; default `["agent","-p"]` |
+| `CURSOR_ARGS_JSON` | no | JSON array of CLI args **before** the prompt; default `["agent"]` |
 | `MAX_TELEGRAM_CHUNK` | no | Default `3800` (Telegram max 4096) |
 
 Your message text becomes the **last** argument:
@@ -89,18 +89,18 @@ DM [@userinfobot](https://t.me/userinfobot) — use the `Id` value in `ALLOWED_C
 
 ## systemd (example)
 
-Adjust paths to match where you cloned the repo (example: `/opt/VPS_Telegram_Bridge`).
+Adjust paths to match where you cloned the repo (example: `/opt/VPS_Bridge_Bot`).
 
 ```ini
 [Unit]
-Description=VPS Telegram Bridge (Cursor CLI)
+Description=VPS Bridge Bot (Cursor CLI)
 After=network-online.target
 
 [Service]
 Type=simple
 User=YOUR_USER
-WorkingDirectory=/opt/VPS_Telegram_Bridge
-EnvironmentFile=/opt/VPS_Telegram_Bridge/.env
+WorkingDirectory=/opt/VPS_Bridge_Bot
+EnvironmentFile=/opt/VPS_Bridge_Bot/.env
 ExecStart=/usr/bin/node dist/index.js
 Restart=on-failure
 RestartSec=5
@@ -109,30 +109,30 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-Install the unit (e.g. `/etc/systemd/system/vps-telegram-bridge.service`), then:
+Install the unit (e.g. `/etc/systemd/system/vps-bridge-bot.service`), then:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable --now vps-telegram-bridge
-journalctl -u vps-telegram-bridge -f
+sudo systemctl enable --now vps-bridge-bot
+journalctl -u vps-bridge-bot -f
 ```
 
 ## Git remote
 
 Canonical remote:
 
-`https://github.com/manupareekk/VPS_Telegram_Bridge.git`
+`https://github.com/manupareekk/VPS_Bridge_Bot.git`
 
 ```bash
-git remote add origin https://github.com/manupareekk/VPS_Telegram_Bridge.git
-# or: git remote set-url origin https://github.com/manupareekk/VPS_Telegram_Bridge.git
+git remote add origin https://github.com/manupareekk/VPS_Bridge_Bot.git
+# or: git remote set-url origin https://github.com/manupareekk/VPS_Bridge_Bot.git
 git push -u origin main
 ```
 
 Set the GitHub description (one-time):
 
 ```bash
-gh repo edit manupareekk/VPS_Telegram_Bridge --description "Telegram bot: send prompts to Cursor CLI on your VPS; stream agent stdout/stderr back to chat."
+gh repo edit manupareekk/VPS_Bridge_Bot --description "Telegram bot: send prompts to Cursor CLI on your VPS; stream agent stdout/stderr back to chat."
 ```
 
 Never commit `.env` (it is listed in `.gitignore`).

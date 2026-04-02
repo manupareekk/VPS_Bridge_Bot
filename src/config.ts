@@ -25,13 +25,13 @@ if (allowedChatIds.length === 0) {
 let cursorArgsBeforePrompt: string[];
 try {
   cursorArgsBeforePrompt = JSON.parse(
-    process.env.CURSOR_ARGS_JSON ?? '["agent","-p"]',
+    process.env.CURSOR_ARGS_JSON ?? '["agent"]',
   ) as string[];
   if (!Array.isArray(cursorArgsBeforePrompt) || !cursorArgsBeforePrompt.every((x) => typeof x === "string")) {
     throw new Error("not string[]");
   }
 } catch {
-  throw new Error('CURSOR_ARGS_JSON must be a JSON array of strings, e.g. ["agent","-p","--force"]');
+  throw new Error('CURSOR_ARGS_JSON must be a JSON array of strings, e.g. ["agent","--force"]');
 }
 
 export const config = {

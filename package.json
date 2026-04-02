@@ -1,10 +1,10 @@
 {
-  "name": "vps-telegram-bridge",
+  "name": "vps-bridge-bot",
   "version": "1.0.0",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/manupareekk/VPS_Telegram_Bridge.git"
+    "url": "https://github.com/manupareekk/VPS_Bridge_Bot.git"
   },
   "type": "module",
   "engines": {

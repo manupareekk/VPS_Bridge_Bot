@@ -16,7 +16,7 @@ let lineBuffer = "";
 let sendChain: Promise<void> = Promise.resolve();
 
 function queueSend(chatId: number, text: string): void {
-  if (text.length === 0) return;
+  if (text.trim().length === 0) return;
   sendChain = sendChain
     .then(async () => {
       const parts = splitForTelegram(text, config.maxTelegramChunk);
