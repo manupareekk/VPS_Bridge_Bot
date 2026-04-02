@@ -1,4 +1,6 @@
-# cursor-vps-telegram-bridge
+# VPS Telegram Bridge
+
+**Repo:** [github.com/manupareekk/VPS_Telegram_Bridge](https://github.com/manupareekk/VPS_Telegram_Bridge)
 
 Run [Cursor CLI](https://cursor.com/cli) on your VPS from **Telegram**: send a message as the agent prompt, get stdout/stderr streamed back in chat (line-by-line, split under Telegram’s size limit).
 
@@ -75,6 +77,26 @@ WantedBy=multi-user.target
 ```
 
 Then: `sudo systemctl enable --now cursor-telegram-bridge` (rename unit file to match).
+
+## Git remote
+
+Canonical remote:
+
+`https://github.com/manupareekk/VPS_Telegram_Bridge.git`
+
+```bash
+git remote add origin https://github.com/manupareekk/VPS_Telegram_Bridge.git
+# or: git remote set-url origin https://github.com/manupareekk/VPS_Telegram_Bridge.git
+git push -u origin main
+```
+
+Set the GitHub description (one-time):
+
+```bash
+gh repo edit manupareekk/VPS_Telegram_Bridge --description "Telegram bot: send prompts to Cursor CLI on your VPS; stream agent stdout/stderr back to chat."
+```
+
+Never commit `.env` (it is listed in `.gitignore`).
 
 ## Security
 
