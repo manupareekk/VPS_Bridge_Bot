@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-ORIGIN_URL="https://github.com/manupareekk/VPS_Telegram_Bridge.git"
+ORIGIN_URL="https://github.com/manupareekk/VPS_Bridge_Bot.git"
 
 git add -A
 git diff --staged --quiet || git commit -m "chore: sync before push"
