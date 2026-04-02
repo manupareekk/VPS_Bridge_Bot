@@ -10,13 +10,44 @@ Run [Cursor CLI](https://cursor.com/cli) on your VPS from **Telegram**: send a m
 - Cursor CLI installed on the VPS and authenticated the same way you already use in the terminal (`CURSOR_API_KEY` or login—see Cursor docs).
 - A Telegram bot token ([@BotFather](https://t.me/BotFather)).
 
-## Quick start
+## Deploy on your VPS
+
+```bash
+git clone https://github.com/manupareekk/VPS_Telegram_Bridge.git
+cd VPS_Telegram_Bridge
+```
+
+Install dependencies and build (prefer **`npm ci`** on the server for a clean lockfile match; **`npm install`** is fine for local hacking):
+
+```bash
+npm ci
+npm run build
+```
+
+Copy and edit env (see [Environment](#environment) and [`.env.example`](./.env.example)):
+
+```bash
+cp .env.example .env
+nano .env   # set TELEGRAM_BOT_TOKEN, ALLOWED_CHAT_IDS, AGENT_WORKDIR, CURSOR_*
+```
+
+**Before relying on the bot**, SSH into the VPS and run your usual Cursor CLI command once in `AGENT_WORKDIR` so you know auth and flags work.
+
+Run the bridge (keep it running with tmux/screen, or use [systemd](#systemd-example) below):
+
+```bash
+npm start
+```
+
+**Network:** long polling needs **outbound HTTPS** from the VPS to `api.telegram.org` (port 443). No inbound port is required for Telegram.
+
+## Quick start (already cloned)
 
 ```bash
 cp .env.example .env
 # edit .env
 
-npm install
+npm install   # or: npm ci
 npm run build
 npm start
 ```
@@ -58,16 +89,18 @@ DM [@userinfobot](https://t.me/userinfobot) — use the `Id` value in `ALLOWED_C
 
 ## systemd (example)
 
+Adjust paths to match where you cloned the repo (example: `/opt/VPS_Telegram_Bridge`).
+
 ```ini
 [Unit]
-Description=Cursor Telegram bridge
+Description=VPS Telegram Bridge (Cursor CLI)
 After=network-online.target
 
 [Service]
 Type=simple
 User=YOUR_USER
-WorkingDirectory=/opt/cursor-vps-telegram-bridge
-EnvironmentFile=/opt/cursor-vps-telegram-bridge/.env
+WorkingDirectory=/opt/VPS_Telegram_Bridge
+EnvironmentFile=/opt/VPS_Telegram_Bridge/.env
 ExecStart=/usr/bin/node dist/index.js
 Restart=on-failure
 RestartSec=5
@@ -76,7 +109,13 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-Then: `sudo systemctl enable --now cursor-telegram-bridge` (rename unit file to match).
+Install the unit (e.g. `/etc/systemd/system/vps-telegram-bridge.service`), then:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now vps-telegram-bridge
+journalctl -u vps-telegram-bridge -f
+```
 
 ## Git remote
 
@@ -97,6 +136,16 @@ gh repo edit manupareekk/VPS_Telegram_Bridge --description "Telegram bot: send p
 ```
 
 Never commit `.env` (it is listed in `.gitignore`).
+
+## Troubleshooting
+
+| Symptom | What to check |
+|--------|----------------|
+| Bot replies **Unauthorized** | Your Telegram account id must be in `ALLOWED_CHAT_IDS` (use [@userinfobot](https://t.me/userinfobot)). No typos or spaces in the comma list. |
+| **No output** or instant failure | On the VPS, run the same `cursor …` invocation manually in `AGENT_WORKDIR`. Fix `CURSOR_BIN`, `CURSOR_ARGS_JSON`, and Cursor auth (`CURSOR_API_KEY` / login) until that works. |
+| Bot **never responds** / hangs | Is `npm start` running? Wrong or revoked `TELEGRAM_BOT_TOKEN`? |
+| **Network / polling** issues | Ensure outbound TCP 443 to the internet (and not blocked by a strict firewall). The process must reach `api.telegram.org`. |
+| **Huge or empty** Telegram messages | Very long lines are split; empty lines are skipped. Check raw logs on the VPS if needed. |
 
 ## Security
 
